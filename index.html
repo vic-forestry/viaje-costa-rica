@@ -3,534 +3,381 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Calendario Víctor & Celeste · Viaje CR</title>
+<title>Calendario Viaje CR</title>
 <style>
 :root {
-  --bg: #f5f4f0;
-  --card: #ffffff;
-  --border: rgba(0,0,0,0.09);
-  --border-strong: rgba(0,0,0,0.16);
-  --line: rgba(0,0,0,0.055);
-  --text: #1a1a18;
-  --text-mute: #6b6a64;
-  --text-hint: #aaa89f;
-  --vic: #185fa5; --vic-bg: #e6f1fb; --vic-text: #0c447c; --vic-border: #85b7eb;
-  --cel: #993556; --cel-bg: #fbeaf0; --cel-text: #72243e; --cel-border: #ed93b1;
-  --mundial: #3b6d11; --mundial-bg: #eaf3de; --mundial-text: #27500a; --mundial-border: #97c459;
-  --radius: 12px; --radius-sm: 7px;
-  --head-h: 46px;
+  --bg:#f5f4f0;--card:#fff;--border:rgba(0,0,0,.09);--border-strong:rgba(0,0,0,.16);--line:rgba(0,0,0,.055);
+  --text:#1a1a18;--text-mute:#6b6a64;--text-hint:#aaa89f;
+  --vic:#185fa5;--vic-bg:#e6f1fb;--vic-text:#0c447c;--vic-bd:#85b7eb;
+  --cel:#993556;--cel-bg:#fbeaf0;--cel-text:#72243e;--cel-bd:#ed93b1;
+  --zoe:#7a3bb1;--zoe-bg:#f0eafc;--zoe-text:#4a1f7a;--zoe-bd:#b97de8;
+  --mun:#3b6d11;--mun-bg:#eaf3de;--mun-text:#27500a;--mun-bd:#97c459;
+  --r:12px;--rs:7px;--slot:28px;
 }
-@media (prefers-color-scheme: dark) {
-  :root {
-    --bg: #1c1b19; --card: #272521;
-    --border: rgba(255,255,255,0.1); --border-strong: rgba(255,255,255,0.18);
-    --line: rgba(255,255,255,0.065);
-    --text: #edecea; --text-mute: #a8a69e; --text-hint: #6a6860;
-    --vic: #85b7eb; --vic-bg: #0e3356; --vic-text: #b5d4f4; --vic-border: #378add;
-    --cel: #ed93b1; --cel-bg: #521a30; --cel-text: #f4c0d1; --cel-border: #d4537e;
-    --mundial: #97c459; --mundial-bg: #253d0d; --mundial-text: #c0dd97; --mundial-border: #639922;
-  }
-}
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
-body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background: var(--bg); color: var(--text); -webkit-font-smoothing: antialiased; padding: 12px; }
-.wrap { max-width: 860px; margin: 0 auto; }
-
-/* HEADER */
-header { margin-bottom: 14px; }
-h1 { font-size: 19px; font-weight: 600; letter-spacing: -0.3px; }
-.sub { color: var(--text-mute); font-size: 13px; margin-top: 2px; }
-.legend { display: flex; gap: 12px; margin-top: 10px; flex-wrap: wrap; font-size: 12px; }
-.legend span { display: inline-flex; align-items: center; gap: 5px; color: var(--text-mute); }
-.dot { width: 10px; height: 10px; border-radius: 3px; flex-shrink: 0; }
-.dot.vic { background: var(--vic); } .dot.cel { background: var(--cel); } .dot.mundial { background: var(--mundial); }
-
-/* TOP BAR */
-.bar { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; margin-bottom: 12px; }
-.bar select { font-family: inherit; font-size: 13px; padding: 6px 8px; border-radius: var(--radius-sm); border: 1px solid var(--border-strong); background: var(--card); color: var(--text); }
-.sync-badge { font-size: 12px; padding: 5px 10px; border-radius: 20px; display: inline-flex; align-items: center; gap: 6px; border: 1px solid var(--border-strong); color: var(--text-mute); background: var(--card); white-space: nowrap; }
-.sync-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--text-hint); flex-shrink: 0; }
-.sync-badge.online { color: var(--mundial-text); border-color: var(--mundial-border); background: var(--mundial-bg); }
-.sync-badge.online .sync-dot { background: var(--mundial); }
-.sync-badge.error { color: var(--cel-text); border-color: var(--cel-border); background: var(--cel-bg); }
-.sync-badge.error .sync-dot { background: var(--cel); }
-.btn-ghost { font-family: inherit; font-size: 12px; padding: 6px 10px; border-radius: var(--radius-sm); border: 1px solid var(--border-strong); background: none; color: var(--text-mute); cursor: pointer; margin-left: auto; white-space: nowrap; }
-.btn-ghost:hover { color: var(--cel); border-color: var(--cel); }
-.btn-expand { font-family: inherit; font-size: 12px; padding: 6px 10px; border-radius: var(--radius-sm); border: 1px solid var(--border-strong); background: none; color: var(--text-mute); cursor: pointer; white-space: nowrap; }
-.btn-expand:hover { color: var(--vic); border-color: var(--vic); }
-
-/* DAY CARD */
-.day { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); margin-bottom: 10px; overflow: hidden; }
-.day-today { border-color: var(--vic-border); border-width: 1.5px; }
-
-.day-head {
-  display: flex; align-items: center; gap: 10px;
-  padding: 0 12px; height: var(--head-h); cursor: pointer; user-select: none;
-}
-.day-today .day-head { background: var(--vic-bg); }
-.day-chevron { font-size: 14px; color: var(--text-hint); transition: transform .2s; flex-shrink: 0; line-height: 1; }
-.day.open .day-chevron { transform: rotate(90deg); }
-.day-name { font-weight: 600; font-size: 14px; text-transform: capitalize; min-width: 90px; }
-.day-today .day-name { color: var(--vic-text); }
-.day-date { color: var(--text-hint); font-size: 12px; }
-.day-pills { display: flex; gap: 4px; flex-wrap: wrap; flex: 1; justify-content: flex-end; overflow: hidden; }
-.pill { font-size: 10.5px; padding: 2px 7px; border-radius: 12px; white-space: nowrap; font-weight: 500; max-width: 110px; overflow: hidden; text-overflow: ellipsis; }
-.pill.vic { background: var(--vic-bg); color: var(--vic-text); }
-.pill.cel { background: var(--cel-bg); color: var(--cel-text); }
-.pill.mundial { background: var(--mundial-bg); color: var(--mundial-text); }
-.day-add-btn { flex-shrink: 0; width: 28px; height: 28px; border-radius: 50%; border: 1px solid var(--border-strong); background: none; color: var(--text-mute); cursor: pointer; font-size: 17px; line-height: 1; display: flex; align-items: center; justify-content: center; }
-.day-add-btn:hover { color: var(--vic); border-color: var(--vic); }
-
-/* DAY BODY */
-.day-body { display: none; border-top: 1px solid var(--line); }
-.day.open .day-body { display: block; }
-
-.cols-head { display: grid; grid-template-columns: 42px 1fr 1fr; border-bottom: 1px solid var(--line); }
-.cols-head div { padding: 5px 8px; font-size: 11px; font-weight: 600; }
-.ch-vic { color: var(--vic) !important; }
-.ch-cel { color: var(--cel) !important; }
-
-/* ALL DAY ROW */
-.allday-row { display: grid; grid-template-columns: 42px 1fr 1fr; border-bottom: 1px solid var(--line); min-height: 30px; }
-.allday-label { font-size: 10px; color: var(--text-hint); padding: 5px 4px 5px 0; text-align: right; border-right: 1px solid var(--line); display: flex; align-items: center; justify-content: flex-end; }
-.allday-cell { padding: 4px; }
-.allday-cell.col-vic { border-right: 1px solid var(--line); }
-
-/* TIMELINE */
-.timeline { display: grid; grid-template-columns: 42px 1fr 1fr; }
-.hr-label { font-size: 10px; color: var(--text-hint); padding: 3px 5px 3px 0; text-align: right; border-top: 1px solid var(--line); border-right: 1px solid var(--line); line-height: 24px; height: 26px; }
-.hr-cell { border-top: 1px solid var(--line); min-height: 26px; padding: 2px 3px; }
-.hr-cell.col-vic { border-right: 1px solid var(--line); }
-
-/* EVENTS */
-.ev { border-radius: 5px; padding: 4px 6px; font-size: 12px; margin-bottom: 2px; cursor: pointer; border-left: 3px solid; display: block; }
-.ev .ev-t { font-weight: 600; font-size: 10.5px; opacity: 0.8; display: block; }
-.ev .ev-n { display: block; line-height: 1.3; }
-.ev .ev-loc { display: block; font-size: 10.5px; opacity: 0.7; margin-top: 1px; }
-.ev .ev-end { display: block; font-size: 10px; opacity: 0.65; margin-top: 1px; font-style: italic; }
-.ev.vic { background: var(--vic-bg); color: var(--vic-text); border-color: var(--vic); }
-.ev.cel { background: var(--cel-bg); color: var(--cel-text); border-color: var(--cel); }
-.ev.mundial { background: var(--mundial-bg); color: var(--mundial-text); border-color: var(--mundial); cursor: default; }
-.ev.multiday { opacity: 0.85; }
-
-.free-msg { padding: 10px 14px; font-size: 12px; color: var(--text-hint); font-style: italic; }
-
-/* MODAL */
-.overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.48); z-index: 200; align-items: flex-end; justify-content: center; }
-.overlay.open { display: flex; }
-.modal { background: var(--card); width: 100%; max-width: 460px; border-radius: 18px 18px 0 0; padding: 18px 16px 36px; max-height: 92vh; overflow-y: auto; }
-.modal-handle { width: 36px; height: 4px; background: var(--border-strong); border-radius: 2px; margin: 0 auto 14px; }
-.modal h2 { font-size: 16px; font-weight: 600; margin-bottom: 14px; }
-.field { margin-bottom: 11px; }
-.field label { display: block; font-size: 11px; color: var(--text-mute); margin-bottom: 4px; font-weight: 500; letter-spacing: 0.2px; }
-.field input, .field select { width: 100%; font-family: inherit; font-size: 15px; padding: 10px; border: 1px solid var(--border-strong); border-radius: var(--radius-sm); background: var(--bg); color: var(--text); }
-.field-row { display: flex; gap: 8px; }
-.field-row .field { flex: 1; }
-.field-hint { font-size: 11px; color: var(--text-hint); margin-top: 3px; }
-.modal-actions { display: flex; gap: 8px; margin-top: 14px; }
-.modal-actions button { flex: 1; font-family: inherit; font-size: 15px; padding: 12px; border-radius: var(--radius-sm); border: 1px solid var(--border-strong); cursor: pointer; background: var(--card); color: var(--text); font-weight: 500; }
-.btn-save { background: var(--vic) !important; color: #fff !important; border-color: var(--vic) !important; }
-.btn-del { background: none !important; border-color: var(--cel-border) !important; color: var(--cel) !important; flex: 0 0 auto !important; padding: 12px 14px !important; }
-
-.loading { text-align: center; padding: 40px 20px; color: var(--text-mute); font-size: 14px; }
-
-@media (min-width: 580px) {
-  .overlay { align-items: center; }
-  .modal { border-radius: 16px; }
-}
+@media(prefers-color-scheme:dark){:root{
+  --bg:#1c1b19;--card:#272521;--border:rgba(255,255,255,.1);--border-strong:rgba(255,255,255,.18);--line:rgba(255,255,255,.065);
+  --text:#edecea;--text-mute:#a8a69e;--text-hint:#6a6860;
+  --vic:#85b7eb;--vic-bg:#0e3356;--vic-text:#b5d4f4;--vic-bd:#378add;
+  --cel:#ed93b1;--cel-bg:#521a30;--cel-text:#f4c0d1;--cel-bd:#d4537e;
+  --zoe:#c49af0;--zoe-bg:#3a1f5e;--zoe-text:#e0c8fa;--zoe-bd:#9b59d0;
+  --mun:#97c459;--mun-bg:#253d0d;--mun-text:#c0dd97;--mun-bd:#639922;
+}}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;background:var(--bg);color:var(--text);-webkit-font-smoothing:antialiased;padding:12px}
+.wrap{max-width:960px;margin:0 auto}
+header{margin-bottom:14px}
+h1{font-size:19px;font-weight:600;letter-spacing:-.3px}
+.sub{color:var(--text-mute);font-size:13px;margin-top:2px}
+.legend{display:flex;gap:12px;margin-top:10px;flex-wrap:wrap;font-size:12px}
+.legend span{display:inline-flex;align-items:center;gap:5px;color:var(--text-mute)}
+.dot{width:10px;height:10px;border-radius:3px;flex-shrink:0}
+.dot.vic{background:var(--vic)}.dot.cel{background:var(--cel)}.dot.zoe{background:var(--zoe)}.dot.mun{background:var(--mun)}
+.bar{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:12px}
+.bar select{font-family:inherit;font-size:13px;padding:6px 8px;border-radius:var(--rs);border:1px solid var(--border-strong);background:var(--card);color:var(--text)}
+.sbadge{font-size:12px;padding:5px 10px;border-radius:20px;display:inline-flex;align-items:center;gap:6px;border:1px solid var(--border-strong);color:var(--text-mute);background:var(--card);white-space:nowrap}
+.sdot{width:7px;height:7px;border-radius:50%;background:var(--text-hint);flex-shrink:0}
+.sbadge.online{color:var(--mun-text);border-color:var(--mun-bd);background:var(--mun-bg)}.sbadge.online .sdot{background:var(--mun)}
+.sbadge.error{color:var(--cel-text);border-color:var(--cel-bd);background:var(--cel-bg)}.sbadge.error .sdot{background:var(--cel)}
+.btop{font-family:inherit;font-size:12px;padding:6px 10px;border-radius:var(--rs);border:1px solid var(--border-strong);background:none;color:var(--text-mute);cursor:pointer;white-space:nowrap}
+.btop:hover{color:var(--vic);border-color:var(--vic)}
+.breset{margin-left:auto}.breset:hover{color:var(--cel)!important;border-color:var(--cel)!important}
+.day{background:var(--card);border:1px solid var(--border);border-radius:var(--r);margin-bottom:10px;overflow:hidden}
+.day-today{border-color:var(--vic-bd);border-width:1.5px}
+.dhead{display:flex;align-items:center;gap:8px;padding:0 12px;height:46px;cursor:pointer;user-select:none}
+.day-today .dhead{background:var(--vic-bg)}
+.chev{font-size:13px;color:var(--text-hint);transition:transform .2s;flex-shrink:0}
+.day.open .chev{transform:rotate(90deg)}
+.dname{font-weight:600;font-size:14px;text-transform:capitalize;min-width:86px}
+.day-today .dname{color:var(--vic-text)}
+.ddate{color:var(--text-hint);font-size:12px;min-width:44px}
+.dpills{display:flex;gap:4px;flex-wrap:wrap;flex:1;justify-content:flex-end;overflow:hidden}
+.pill{font-size:10px;padding:2px 7px;border-radius:12px;white-space:nowrap;font-weight:500;max-width:130px;overflow:hidden;text-overflow:ellipsis}
+.pill.vic{background:var(--vic-bg);color:var(--vic-text)}.pill.cel{background:var(--cel-bg);color:var(--cel-text)}
+.pill.zoe{background:var(--zoe-bg);color:var(--zoe-text)}.pill.mun{background:var(--mun-bg);color:var(--mun-text)}
+.dadd{flex-shrink:0;width:28px;height:28px;border-radius:50%;border:1px solid var(--border-strong);background:none;color:var(--text-mute);cursor:pointer;font-size:17px;display:flex;align-items:center;justify-content:center}
+.dadd:hover{color:var(--vic);border-color:var(--vic)}
+.dbody{display:none;border-top:1px solid var(--line)}
+.day.open .dbody{display:block}
+.colhead{display:grid;grid-template-columns:42px 1fr 1fr 1fr 1fr;border-bottom:1px solid var(--line)}
+.colhead div{padding:5px 4px;font-size:11px;font-weight:600;text-align:center;border-right:1px solid var(--line)}
+.colhead div:last-child{border-right:none}
+.ch-v{color:var(--vic)!important}.ch-c{color:var(--cel)!important}.ch-z{color:var(--zoe)!important}.ch-m{color:var(--mun)!important}
+.adrow{display:grid;grid-template-columns:42px 1fr 1fr 1fr 1fr;border-bottom:1px solid var(--line);min-height:28px}
+.adlbl{font-size:10px;color:var(--text-hint);padding:5px 4px 5px 2px;text-align:right;border-right:1px solid var(--line);display:flex;align-items:center;justify-content:flex-end}
+.adcell{padding:3px;border-right:1px solid var(--line)}.adcell:last-child{border-right:none}
+.tlwrap{position:relative}
+.tlgrid{display:grid;grid-template-columns:42px 1fr 1fr 1fr 1fr}
+.hrlbl{font-size:10px;color:var(--text-hint);padding:3px 5px 0 0;text-align:right;border-top:1px solid var(--line);border-right:1px solid var(--line);height:var(--slot)}
+.hrbg{border-top:1px solid var(--line);border-right:1px solid var(--line);height:var(--slot)}.hrbg:last-child{border-right:none}
+.evoverlay{position:absolute;top:0;display:grid;grid-template-columns:1fr 1fr 1fr 1fr;left:42px;right:0;pointer-events:none}
+.evcol{position:relative;border-right:1px solid var(--line);pointer-events:auto}.evcol:last-child{border-right:none}
+.ev{border-radius:5px;padding:3px 5px;font-size:11.5px;cursor:pointer;border-left:3px solid;display:block;overflow:hidden;line-height:1.3;position:absolute;left:2px;right:2px}
+.ev .et{font-weight:600;font-size:10px;opacity:.85;display:block}
+.ev .en{display:block}.ev .eloc{display:block;font-size:10px;opacity:.7;margin-top:1px}.ev .edur{display:block;font-size:10px;opacity:.6;margin-top:1px;font-style:italic}
+.ev.vic{background:var(--vic-bg);color:var(--vic-text);border-color:var(--vic)}
+.ev.cel{background:var(--cel-bg);color:var(--cel-text);border-color:var(--cel)}
+.ev.zoe{background:var(--zoe-bg);color:var(--zoe-text);border-color:var(--zoe)}
+.ev.mundial{background:var(--mun-bg);color:var(--mun-text);border-color:var(--mun);cursor:default}
+.ev-ad{position:static;left:auto;right:auto;margin-bottom:2px;min-height:22px}
+.freemsg{padding:10px 14px;font-size:12px;color:var(--text-hint);font-style:italic}
+.loading{text-align:center;padding:40px 20px;color:var(--text-mute);font-size:14px}
+.overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.48);z-index:200;align-items:flex-end;justify-content:center}
+.overlay.open{display:flex}
+.modal{background:var(--card);width:100%;max-width:460px;border-radius:18px 18px 0 0;padding:18px 16px 36px;max-height:92vh;overflow-y:auto}
+.mhandle{width:36px;height:4px;background:var(--border-strong);border-radius:2px;margin:0 auto 14px}
+.modal h2{font-size:16px;font-weight:600;margin-bottom:14px}
+.field{margin-bottom:11px}.field label{display:block;font-size:11px;color:var(--text-mute);margin-bottom:4px;font-weight:500}
+.field input,.field select{width:100%;font-family:inherit;font-size:15px;padding:10px;border:1px solid var(--border-strong);border-radius:var(--rs);background:var(--bg);color:var(--text)}
+.frow{display:flex;gap:8px}.frow .field{flex:1}
+.fhint{font-size:11px;color:var(--text-hint);margin-top:3px}
+.mactions{display:flex;gap:8px;margin-top:14px}
+.mactions button{flex:1;font-family:inherit;font-size:15px;padding:12px;border-radius:var(--rs);border:1px solid var(--border-strong);cursor:pointer;background:var(--card);color:var(--text);font-weight:500}
+.bsave{background:var(--vic)!important;color:#fff!important;border-color:var(--vic)!important}
+.bdel{background:none!important;border-color:var(--cel-bd)!important;color:var(--cel)!important;flex:0 0 auto!important;padding:12px 14px!important}
+@media(min-width:580px){.overlay{align-items:center}.modal{border-radius:16px}}
 </style>
 </head>
 <body>
 <div class="wrap">
   <header>
-    <h1>Víctor &amp; Celeste · Viaje CR 🇨🇷</h1>
-    <div class="sub">24 jun – 16 jul · Toca ▶ para abrir un día, + para agregar</div>
+    <h1>Viaje CR &#x1F1E8;&#x1F1F7;</h1>
+    <div class="sub">24 jun &ndash; 16 jul &middot; Toca &#9654; para abrir un d&iacute;a &middot; + para agregar</div>
     <div class="legend">
-      <span><span class="dot vic"></span>Víctor</span>
+      <span><span class="dot vic"></span>V&iacute;ctor</span>
       <span><span class="dot cel"></span>Celeste</span>
-      <span><span class="dot mundial"></span>Mundial</span>
+      <span><span class="dot zoe"></span>Zoe</span>
+      <span><span class="dot mun"></span>Mundial</span>
     </div>
   </header>
-
   <div class="bar">
-    <div class="sync-badge" id="sync-badge"><span class="sync-dot"></span><span id="sync-text">Conectando...</span></div>
+    <div class="sbadge" id="sbadge"><span class="sdot"></span><span id="stxt">Conectando...</span></div>
     <select id="filter">
       <option value="all">Ver todo</option>
-      <option value="vic">Solo Víctor</option>
-      <option value="cel">Solo Celeste</option>
+      <option value="vic">V&iacute;ctor</option>
+      <option value="cel">Celeste</option>
+      <option value="zoe">Zoe</option>
       <option value="personal">Sin Mundial</option>
     </select>
-    <button class="btn-expand" id="btn-expand">Expandir todo</button>
-    <button class="btn-ghost" id="reset">Restaurar</button>
+    <button class="btop" id="btnexp">Expandir todo</button>
+    <button class="btop breset" id="btnreset">Restaurar</button>
   </div>
-
-  <div id="grid"><div class="loading">Cargando calendario...</div></div>
+  <div id="grid"><div class="loading">Cargando...</div></div>
 </div>
 
 <div class="overlay" id="overlay">
   <div class="modal">
-    <div class="modal-handle"></div>
-    <h2 id="modal-title">Evento</h2>
-    <div class="field">
-      <label>NOMBRE</label>
-      <input type="text" id="m-name" placeholder="¿Qué es?">
+    <div class="mhandle"></div>
+    <h2 id="mtitle">Evento</h2>
+    <div class="field"><label>NOMBRE</label><input type="text" id="mn" placeholder="&#191;Qu&eacute; es?"></div>
+    <div class="field"><label>LUGAR</label><input type="text" id="ml" placeholder="Opcional"></div>
+    <div class="frow">
+      <div class="field"><label>FECHA INICIO</label><input type="date" id="md" min="2026-06-24" max="2026-07-16"></div>
+      <div class="field"><label>HORA INICIO</label><input type="time" id="mt"></div>
     </div>
-    <div class="field">
-      <label>LUGAR</label>
-      <input type="text" id="m-loc" placeholder="Opcional">
+    <div class="frow">
+      <div class="field"><label>FECHA FIN</label><input type="date" id="med" min="2026-06-24" max="2026-07-16"><div class="fhint">Para eventos de varios d&iacute;as</div></div>
+      <div class="field"><label>HORA FIN</label><input type="time" id="met"></div>
     </div>
-    <div class="field-row">
-      <div class="field">
-        <label>FECHA INICIO</label>
-        <input type="date" id="m-day" min="2026-06-24" max="2026-07-16">
-      </div>
-      <div class="field">
-        <label>HORA INICIO</label>
-        <input type="time" id="m-time">
-      </div>
-    </div>
-    <div class="field-row">
-      <div class="field">
-        <label>FECHA FIN</label>
-        <input type="date" id="m-endday" min="2026-06-24" max="2026-07-16">
-        <div class="field-hint">Opcional — para eventos de varios días</div>
-      </div>
-      <div class="field">
-        <label>HORA FIN</label>
-        <input type="time" id="m-endtime">
-      </div>
-    </div>
-    <div class="field">
-      <label>DE QUIÉN</label>
-      <select id="m-who">
-        <option value="vic">Víctor</option>
+    <div class="field"><label>DE QUI&Eacute;N</label>
+      <select id="mw">
+        <option value="vic">V&iacute;ctor</option>
         <option value="cel">Celeste</option>
+        <option value="zoe">Zoe</option>
         <option value="mundial">Mundial</option>
       </select>
     </div>
-    <div class="modal-actions">
-      <button class="btn-del" id="m-del" style="display:none">Eliminar</button>
-      <button id="m-cancel">Cancelar</button>
-      <button class="btn-save" id="m-save">Guardar</button>
+    <div class="mactions">
+      <button class="bdel" id="mdel" style="display:none">Eliminar</button>
+      <button id="mcancel">Cancelar</button>
+      <button class="bsave" id="msave">Guardar</button>
     </div>
   </div>
 </div>
 
 <script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-import { getFirestore, collection, onSnapshot, addDoc, setDoc, deleteDoc, doc, writeBatch }
-  from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+import{initializeApp}from"https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import{getFirestore,collection,onSnapshot,addDoc,setDoc,deleteDoc,doc,writeBatch}from"https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
-const firebaseConfig = {
-  apiKey: "AIzaSyARkOMYQ0EYPnxbeWfIe5K3rGfYBkttnO0",
-  authDomain: "viaje-cr.firebaseapp.com",
-  projectId: "viaje-cr",
-  storageBucket: "viaje-cr.firebasestorage.app",
-  messagingSenderId: "636560244223",
-  appId: "1:636560244223:web:34d31cc6e15913ee8bfbca"
-};
+const cfg={apiKey:"AIzaSyARkOMYQ0EYPnxbeWfIe5K3rGfYBkttnO0",authDomain:"viaje-cr.firebaseapp.com",projectId:"viaje-cr",storageBucket:"viaje-cr.firebasestorage.app",messagingSenderId:"636560244223",appId:"1:636560244223:web:34d31cc6e15913ee8bfbca"};
+const app=initializeApp(cfg),db=getFirestore(app),col=collection(db,"eventos");
 
-const app = initializeApp(firebaseConfig);
-const db = getFirestore(app);
-const col = collection(db, "eventos");
+const SLOT=28,HOURS=Array.from({length:24},(_,i)=>i),COLS=["vic","cel","zoe","mundial"];
 
-const seed = [
-  {id:"v1",  day:"2026-06-25", time:"18:30", endday:"", endtime:"", title:"Celebración Andre y Juancho", loc:"Casa de Luli", who:"vic"},
-  {id:"v2",  day:"2026-06-26", time:"09:00", endday:"", endtime:"", title:"Recibir a Esther", loc:"La casa", who:"vic"},
-  {id:"v3",  day:"2026-06-26", time:"12:30", endday:"", endtime:"", title:"Almuerzo", loc:"Casa Andrea", who:"vic"},
-  {id:"v4",  day:"2026-06-28", time:"",      endday:"", endtime:"", title:"Cumple de Juancho", loc:"", who:"vic"},
-  {id:"v5",  day:"2026-06-29", time:"07:00", endday:"", endtime:"", title:"Pilates + desayuno", loc:"Casa Andrea", who:"vic"},
-  {id:"v6",  day:"2026-06-29", time:"16:45", endday:"", endtime:"", title:"Cita con Neurólogo", loc:"", who:"vic"},
-  {id:"c1",  day:"2026-06-25", time:"",      endday:"", endtime:"", title:"Mita", loc:"Casa de Mita", who:"cel"},
-  {id:"c2",  day:"2026-06-26", time:"",      endday:"", endtime:"", title:"Pito", loc:"Casa de Pito", who:"cel"},
-  {id:"m1",  day:"2026-06-25", time:"14:00", endday:"", endtime:"", title:"Curazao vs Costa de Marfil", loc:"", who:"mundial"},
-  {id:"m2",  day:"2026-06-25", time:"14:00", endday:"", endtime:"", title:"Ecuador vs Alemania", loc:"", who:"mundial"},
-  {id:"m3",  day:"2026-06-25", time:"17:00", endday:"", endtime:"", title:"Japón vs Suecia", loc:"", who:"mundial"},
-  {id:"m4",  day:"2026-06-25", time:"17:00", endday:"", endtime:"", title:"Túnez vs Países Bajos", loc:"", who:"mundial"},
-  {id:"m5",  day:"2026-06-25", time:"20:00", endday:"", endtime:"", title:"Turquía vs Estados Unidos", loc:"", who:"mundial"},
-  {id:"m6",  day:"2026-06-25", time:"20:00", endday:"", endtime:"", title:"Paraguay vs Australia", loc:"", who:"mundial"},
-  {id:"m7",  day:"2026-06-26", time:"13:00", endday:"", endtime:"", title:"Noruega vs Francia", loc:"", who:"mundial"},
-  {id:"m8",  day:"2026-06-26", time:"13:00", endday:"", endtime:"", title:"Senegal vs Irak", loc:"", who:"mundial"},
-  {id:"m9",  day:"2026-06-26", time:"18:00", endday:"", endtime:"", title:"Cabo Verde vs Arabia Saudita", loc:"", who:"mundial"},
-  {id:"m10", day:"2026-06-26", time:"18:00", endday:"", endtime:"", title:"Uruguay vs España", loc:"", who:"mundial"},
-  {id:"m11", day:"2026-06-26", time:"21:00", endday:"", endtime:"", title:"Egipto vs Irán", loc:"", who:"mundial"},
-  {id:"m12", day:"2026-06-26", time:"21:00", endday:"", endtime:"", title:"Nueva Zelanda vs Bélgica", loc:"", who:"mundial"},
-  {id:"m13", day:"2026-06-27", time:"15:00", endday:"", endtime:"", title:"Panamá vs Inglaterra", loc:"", who:"mundial"},
-  {id:"m14", day:"2026-06-27", time:"15:00", endday:"", endtime:"", title:"Croacia vs Ghana", loc:"", who:"mundial"},
-  {id:"m15", day:"2026-06-27", time:"17:30", endday:"", endtime:"", title:"Colombia vs Portugal", loc:"", who:"mundial"},
-  {id:"m16", day:"2026-06-27", time:"17:30", endday:"", endtime:"", title:"RD Congo vs Uzbekistán", loc:"", who:"mundial"},
-  {id:"m17", day:"2026-06-27", time:"20:00", endday:"", endtime:"", title:"Argelia vs Austria", loc:"", who:"mundial"},
-  {id:"m18", day:"2026-06-27", time:"20:00", endday:"", endtime:"", title:"Jordania vs Argentina", loc:"", who:"mundial"},
+const seed=[
+  {id:"v1",day:"2026-06-25",time:"18:30",endday:"",endtime:"22:00",title:"Celebraci\u00f3n Andre y Juancho",loc:"Casa de Luli",who:"vic"},
+  {id:"v2",day:"2026-06-26",time:"09:00",endday:"",endtime:"10:00",title:"Recibir a Esther",loc:"La casa",who:"vic"},
+  {id:"v3",day:"2026-06-26",time:"12:30",endday:"",endtime:"14:30",title:"Almuerzo",loc:"Casa Andrea",who:"vic"},
+  {id:"v4",day:"2026-06-28",time:"",endday:"",endtime:"",title:"Cumple de Juancho",loc:"",who:"vic"},
+  {id:"v5",day:"2026-06-29",time:"07:00",endday:"",endtime:"10:00",title:"Pilates + desayuno",loc:"Casa Andrea",who:"vic"},
+  {id:"v6",day:"2026-06-29",time:"16:45",endday:"",endtime:"18:00",title:"Cita con Neurol\u00f3go",loc:"",who:"vic"},
+  {id:"c1",day:"2026-06-25",time:"",endday:"",endtime:"",title:"Mita",loc:"Casa de Mita",who:"cel"},
+  {id:"c2",day:"2026-06-26",time:"",endday:"",endtime:"",title:"Pito",loc:"Casa de Pito",who:"cel"},
+  {id:"m1",day:"2026-06-25",time:"14:00",endday:"",endtime:"16:00",title:"Curazao vs Costa de Marfil",loc:"",who:"mundial"},
+  {id:"m2",day:"2026-06-25",time:"14:00",endday:"",endtime:"16:00",title:"Ecuador vs Alemania",loc:"",who:"mundial"},
+  {id:"m3",day:"2026-06-25",time:"17:00",endday:"",endtime:"19:00",title:"Jap\u00f3n vs Suecia",loc:"",who:"mundial"},
+  {id:"m4",day:"2026-06-25",time:"17:00",endday:"",endtime:"19:00",title:"T\u00fanez vs Pa\u00edses Bajos",loc:"",who:"mundial"},
+  {id:"m5",day:"2026-06-25",time:"20:00",endday:"",endtime:"22:00",title:"Turqu\u00eda vs EE.UU.",loc:"",who:"mundial"},
+  {id:"m6",day:"2026-06-25",time:"20:00",endday:"",endtime:"22:00",title:"Paraguay vs Australia",loc:"",who:"mundial"},
+  {id:"m7",day:"2026-06-26",time:"13:00",endday:"",endtime:"15:00",title:"Noruega vs Francia",loc:"",who:"mundial"},
+  {id:"m8",day:"2026-06-26",time:"13:00",endday:"",endtime:"15:00",title:"Senegal vs Irak",loc:"",who:"mundial"},
+  {id:"m9",day:"2026-06-26",time:"18:00",endday:"",endtime:"20:00",title:"Cabo Verde vs Arabia Saudita",loc:"",who:"mundial"},
+  {id:"m10",day:"2026-06-26",time:"18:00",endday:"",endtime:"20:00",title:"Uruguay vs Espa\u00f1a",loc:"",who:"mundial"},
+  {id:"m11",day:"2026-06-26",time:"21:00",endday:"",endtime:"23:00",title:"Egipto vs Ir\u00e1n",loc:"",who:"mundial"},
+  {id:"m12",day:"2026-06-26",time:"21:00",endday:"",endtime:"23:00",title:"Nueva Zelanda vs B\u00e9lgica",loc:"",who:"mundial"},
+  {id:"m13",day:"2026-06-27",time:"15:00",endday:"",endtime:"17:00",title:"Panam\u00e1 vs Inglaterra",loc:"",who:"mundial"},
+  {id:"m14",day:"2026-06-27",time:"15:00",endday:"",endtime:"17:00",title:"Croacia vs Ghana",loc:"",who:"mundial"},
+  {id:"m15",day:"2026-06-27",time:"17:30",endday:"",endtime:"19:30",title:"Colombia vs Portugal",loc:"",who:"mundial"},
+  {id:"m16",day:"2026-06-27",time:"17:30",endday:"",endtime:"19:30",title:"RD Congo vs Uzbekist\u00e1n",loc:"",who:"mundial"},
+  {id:"m17",day:"2026-06-27",time:"20:00",endday:"",endtime:"22:00",title:"Argelia vs Austria",loc:"",who:"mundial"},
+  {id:"m18",day:"2026-06-27",time:"20:00",endday:"",endtime:"22:00",title:"Jordania vs Argentina",loc:"",who:"mundial"},
 ];
 
-let events = [];
-let editingId = null;
-let addContext = null;
-let seeded = false;
-let expandAll = false;
-const openDays = new Set();
+let events=[],editId=null,addCtx=null,seeded=false,expAll=false;
+const openSet=new Set();
+const days=[];
+for(let d=new Date(2026,5,24);d<=new Date(2026,6,16);d.setDate(d.getDate()+1))days.push(new Date(d));
+const DN=["domingo","lunes","martes","mi\u00e9rcoles","jueves","viernes","s\u00e1bado"];
+const MN=["ene","feb","mar","abr","may","jun","jul","ago","sep","oct","nov","dic"];
 
-// Build day list
-const days = [];
-for (let d = new Date(2026,5,24); d <= new Date(2026,6,16); d.setDate(d.getDate()+1)) days.push(new Date(d));
-const dayNames = ["domingo","lunes","martes","miércoles","jueves","viernes","sábado"];
-const monthNames = ["ene","feb","mar","abr","may","jun","jul","ago","sep","oct","nov","dic"];
-const HOURS = Array.from({length:24},(_,i)=>i);
+function iso(d){return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0")}
+function toMin(t){if(!t)return null;const[h,m]=t.split(":").map(Number);return h*60+m}
+function fmt(t){if(!t)return"";const[h,m]=t.split(":").map(Number);const ap=h>=12?"pm":"am";const h12=h%12||12;return m?`${h12}:${String(m).padStart(2,"0")}${ap}`:`${h12}${ap}`}
+function eDays(e){if(!e.endday||e.endday<=e.day)return[e.day];const r=[];for(let d=new Date(e.day+"T12:00");d<=new Date(e.endday+"T12:00");d.setDate(d.getDate()+1))r.push(iso(d));return r}
 
-function iso(d){ return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0"); }
-function fmtTime(t){ if(!t) return ""; const [h,m]=t.split(":").map(Number); const ap=h>=12?"pm":"am"; const h12=h%12===0?12:h%12; return m===0?`${h12}${ap}`:`${h12}:${String(m).padStart(2,"0")}${ap}`; }
-function fmtDate(s){ if(!s) return ""; const [,mo,da]=s.split("-"); const months=["ene","feb","mar","abr","may","jun","jul","ago","sep","oct","nov","dic"]; return da+" "+months[parseInt(mo)-1]; }
+function setSync(st,tx){const b=document.getElementById("sbadge");b.className="sbadge "+st;document.getElementById("stxt").textContent=tx}
 
-// Get all days an event spans
-function eventDays(e) {
-  if (!e.endday || e.endday <= e.day) return [e.day];
-  const result = [];
-  const end = new Date(e.endday+"T12:00:00");
-  for (let d = new Date(e.day+"T12:00:00"); d <= end; d.setDate(d.getDate()+1)) result.push(iso(d));
-  return result;
-}
+onSnapshot(col,snap=>{
+  events=snap.docs.map(d=>({fid:d.id,...d.data()}));
+  setSync("online","En vivo \u2713");
+  if(!seeded&&events.length===0){seeded=true;seedDB();}else{seeded=true;render();}
+},()=>setSync("error","Sin conexi\u00f3n"));
 
-function setSyncStatus(state, text) {
-  const badge = document.getElementById("sync-badge");
-  badge.className = "sync-badge " + state;
-  document.getElementById("sync-text").textContent = text;
-}
+async function seedDB(){const b=writeBatch(db);seed.forEach(e=>b.set(doc(col,e.id),e));await b.commit()}
 
-onSnapshot(col, (snap) => {
-  events = snap.docs.map(d => ({ firestoreId: d.id, ...d.data() }));
-  setSyncStatus("online", "En vivo ✓");
-  if (!seeded && events.length === 0) { seeded = true; seedData(); }
-  else { seeded = true; render(); }
-}, () => setSyncStatus("error", "Sin conexión"));
+function render(){
+  const filter=document.getElementById("filter").value;
+  const grid=document.getElementById("grid");
+  grid.innerHTML="";
+  const today=iso(new Date());
+  days.forEach(d=>{
+    const dIso=iso(d);
+    let de=events.filter(e=>eDays(e).includes(dIso));
+    if(filter==="vic")de=de.filter(e=>e.who==="vic");
+    else if(filter==="cel")de=de.filter(e=>e.who==="cel");
+    else if(filter==="zoe")de=de.filter(e=>e.who==="zoe");
+    else if(filter==="personal")de=de.filter(e=>e.who!=="mundial");
+    const isToday=dIso===today,isOpen=openSet.has(dIso)||expAll;
+    const card=document.createElement("div");
+    card.className="day"+(isToday?" day-today":"")+(isOpen?" open":"");
 
-async function seedData() {
-  const batch = writeBatch(db);
-  seed.forEach(e => batch.set(doc(col, e.id), e));
-  await batch.commit();
-}
-
-function render() {
-  const filter = document.getElementById("filter").value;
-  const grid = document.getElementById("grid");
-  grid.innerHTML = "";
-  const todayIso = iso(new Date());
-
-  days.forEach(d => {
-    const dIso = iso(d);
-
-    // Gather events that appear on this day (including multi-day)
-    let dayEvs = events.filter(e => {
-      const span = eventDays(e);
-      return span.includes(dIso);
-    });
-    if (filter === "vic") dayEvs = dayEvs.filter(e => e.who === "vic");
-    else if (filter === "cel") dayEvs = dayEvs.filter(e => e.who === "cel");
-    else if (filter === "personal") dayEvs = dayEvs.filter(e => e.who !== "mundial");
-
-    const isToday = dIso === todayIso;
-    const isOpen = openDays.has(dIso) || (expandAll);
-
-    const card = document.createElement("div");
-    card.className = "day" + (isToday ? " day-today" : "") + (isOpen ? " open" : "");
-    card.dataset.iso = dIso;
-
-    // HEAD
-    const head = document.createElement("div");
-    head.className = "day-head";
-
-    const chevron = document.createElement("span");
-    chevron.className = "day-chevron"; chevron.textContent = "▶";
-
-    const nameSpan = document.createElement("span");
-    nameSpan.className = "day-name"; nameSpan.textContent = dayNames[d.getDay()];
-
-    const dateSpan = document.createElement("span");
-    dateSpan.className = "day-date"; dateSpan.textContent = d.getDate() + " " + monthNames[d.getMonth()];
-
-    // Pills preview (max 3)
-    const pills = document.createElement("div");
-    pills.className = "day-pills";
-    const preview = dayEvs.filter(e => e.who !== "mundial").slice(0,3);
-    preview.forEach(e => {
-      const p = document.createElement("span");
-      p.className = "pill " + e.who;
-      p.textContent = (e.time ? fmtTime(e.time) + " " : "") + e.title;
-      pills.appendChild(p);
-    });
-    if (dayEvs.filter(e=>e.who!=="mundial").length > 3) {
-      const p = document.createElement("span");
-      p.className = "pill"; p.style.cssText = "background:var(--border);color:var(--text-mute);";
-      p.textContent = "+" + (dayEvs.filter(e=>e.who!=="mundial").length - 3) + " más";
-      pills.appendChild(p);
-    }
-
-    const addBtn = document.createElement("button");
-    addBtn.className = "day-add-btn"; addBtn.textContent = "+"; addBtn.title = "Agregar evento";
-    addBtn.onclick = (ev) => { ev.stopPropagation(); openModal(null, dIso); };
-
-    head.appendChild(chevron); head.appendChild(nameSpan); head.appendChild(dateSpan);
-    head.appendChild(pills); head.appendChild(addBtn);
-
-    head.onclick = () => {
-      if (openDays.has(dIso)) openDays.delete(dIso);
-      else openDays.add(dIso);
-      card.classList.toggle("open");
-    };
-
+    // head
+    const head=document.createElement("div");head.className="dhead";
+    const ch=document.createElement("span");ch.className="chev";ch.textContent="\u25BA";
+    const nm=document.createElement("span");nm.className="dname";nm.textContent=DN[d.getDay()];
+    const dt=document.createElement("span");dt.className="ddate";dt.textContent=d.getDate()+" "+MN[d.getMonth()];
+    const pills=document.createElement("div");pills.className="dpills";
+    const pers=de.filter(e=>e.who!=="mundial");
+    pers.slice(0,3).forEach(e=>{const p=document.createElement("span");p.className="pill "+e.who;p.textContent=(e.time?fmt(e.time)+" ":"")+e.title;pills.appendChild(p)});
+    if(pers.length>3){const p=document.createElement("span");p.className="pill";p.style.cssText="background:var(--border);color:var(--text-mute);";p.textContent="+"+(pers.length-3);pills.appendChild(p)}
+    const ab=document.createElement("button");ab.className="dadd";ab.textContent="+";
+    ab.onclick=ev=>{ev.stopPropagation();openM(null,dIso)};
+    head.appendChild(ch);head.appendChild(nm);head.appendChild(dt);head.appendChild(pills);head.appendChild(ab);
+    head.onclick=()=>{if(openSet.has(dIso))openSet.delete(dIso);else openSet.add(dIso);card.classList.toggle("open")};
     card.appendChild(head);
 
-    // BODY
-    const body = document.createElement("div");
-    body.className = "day-body";
+    // body
+    const body=document.createElement("div");body.className="dbody";
+    const chd=document.createElement("div");chd.className="colhead";
+    chd.innerHTML=`<div></div><div class="ch-v">V\u00edctor</div><div class="ch-c">Celeste</div><div class="ch-z">Zoe</div><div class="ch-m">Mundial</div>`;
+    body.appendChild(chd);
 
-    // Cols header
-    const ch = document.createElement("div");
-    ch.className = "cols-head";
-    ch.innerHTML = `<div></div><div class="ch-vic">Víctor</div><div class="ch-cel">Celeste</div>`;
-    body.appendChild(ch);
-
-    // All-day events (no time, or multi-day continuations)
-    const allDayEvs = dayEvs.filter(e => {
-      const isStart = e.day === dIso;
-      const isMultiDay = e.endday && e.endday > e.day;
-      return !e.time || (isMultiDay && !isStart);
-    });
-    const allDayShown = allDayEvs.filter(e => !e.time);
-    const continuations = dayEvs.filter(e => e.endday && e.endday > e.day && e.day !== dIso);
-
-    if (allDayShown.length || continuations.length) {
-      const row = document.createElement("div");
-      row.className = "allday-row";
-      const lbl = document.createElement("div"); lbl.className = "allday-label"; lbl.textContent = "todo el día";
-      const cV = document.createElement("div"); cV.className = "allday-cell col-vic";
-      const cC = document.createElement("div"); cC.className = "allday-cell";
-      [...allDayShown, ...continuations].forEach(e => {
-        (e.who === "cel" ? cC : cV).appendChild(evEl(e, dIso));
-      });
-      row.appendChild(lbl); row.appendChild(cV); row.appendChild(cC);
+    // all-day
+    const adEvs=de.filter(e=>!e.time);
+    const conts=de.filter(e=>e.time&&e.endday&&e.endday>e.day&&e.day!==dIso);
+    const adAll=[...adEvs,...conts];
+    if(adAll.length){
+      const row=document.createElement("div");row.className="adrow";
+      const lbl=document.createElement("div");lbl.className="adlbl";lbl.textContent="todo d\u00eda";
+      row.appendChild(lbl);
+      COLS.forEach(w=>{const cell=document.createElement("div");cell.className="adcell";adAll.filter(e=>e.who===w).forEach(e=>cell.appendChild(mkEv(e,dIso,true)));row.appendChild(cell)});
       body.appendChild(row);
     }
 
-    // Timed events
-    const timedEvs = dayEvs.filter(e => e.time && !(e.endday && e.endday > e.day && e.day !== dIso));
-
-    const tl = document.createElement("div");
-    tl.className = "timeline";
-    HOURS.forEach(h => {
-      const lbl = document.createElement("div");
-      lbl.className = "hr-label";
-      lbl.textContent = fmtTime(String(h).padStart(2,"0")+":00");
-      const cV = document.createElement("div"); cV.className = "hr-cell col-vic";
-      const cC = document.createElement("div"); cC.className = "hr-cell";
-      timedEvs.filter(e => parseInt(e.time.split(":")[0]) === h).forEach(e => {
-        (e.who === "cel" ? cC : cV).appendChild(evEl(e, dIso));
-      });
-      tl.appendChild(lbl); tl.appendChild(cV); tl.appendChild(cC);
+    // timeline
+    const tl=document.createElement("div");tl.className="tlwrap";tl.style.height=(24*SLOT)+"px";
+    const tlg=document.createElement("div");tlg.className="tlgrid";
+    HOURS.forEach(h=>{
+      const lb=document.createElement("div");lb.className="hrlbl";lb.textContent=fmt(String(h).padStart(2,"0")+":00");
+      tlg.appendChild(lb);
+      for(let c=0;c<4;c++){const bg=document.createElement("div");bg.className="hrbg";tlg.appendChild(bg)}
     });
+    tl.appendChild(tlg);
+
+    const evo=document.createElement("div");evo.className="evoverlay";evo.style.height=(24*SLOT)+"px";
+    const timed=de.filter(e=>e.time&&!(e.endday&&e.endday>e.day&&e.day!==dIso));
+    COLS.forEach(w=>{
+      const ec=document.createElement("div");ec.className="evcol";
+      timed.filter(e=>e.who===w).forEach(e=>{
+        const sMin=toMin(e.time);if(sMin===null)return;
+        let eMin=e.endtime?toMin(e.endtime):null;
+        if(!eMin||eMin<=sMin)eMin=sMin+60;
+        const top=(sMin/60)*SLOT;
+        const h=Math.max(((eMin-sMin)/60)*SLOT-2,18);
+        const el=mkEv(e,dIso,false);
+        el.style.top=top+"px";el.style.height=h+"px";
+        ec.appendChild(el);
+      });
+      evo.appendChild(ec);
+    });
+    tl.appendChild(evo);
     body.appendChild(tl);
 
-    if (!dayEvs.length) {
-      const free = document.createElement("div"); free.className = "free-msg"; free.textContent = "Día libre";
-      body.appendChild(free);
-    }
-
+    if(!de.length){const f=document.createElement("div");f.className="freemsg";f.textContent="D\u00eda libre";body.appendChild(f)}
     card.appendChild(body);
     grid.appendChild(card);
   });
 }
 
-function evEl(e, currentDay) {
-  const el = document.createElement("div");
-  const isMulti = e.endday && e.endday > e.day;
-  const isContinuation = isMulti && e.day !== currentDay;
-  el.className = "ev " + e.who + (isMulti ? " multiday" : "");
-
-  let inner = "";
-  if (e.time && !isContinuation) inner += `<span class="ev-t">${fmtTime(e.time)}</span>`;
-  inner += `<span class="ev-n"></span>`;
-  if (e.loc) inner += `<span class="ev-loc"></span>`;
-  if (isMulti) {
-    const endLabel = isContinuation ? `hasta ${fmtDate(e.endday)}` : `→ ${fmtDate(e.endday)}${e.endtime ? " "+fmtTime(e.endtime):""}`;
-    inner += `<span class="ev-end">${endLabel}</span>`;
-  }
-  el.innerHTML = inner;
-  el.querySelector(".ev-n").textContent = e.title;
-  if (e.loc) el.querySelector(".ev-loc").textContent = "📍 " + e.loc;
-  if (e.who !== "mundial") el.onclick = () => openModal(e.firestoreId, e.day);
+function mkEv(e,curDay,isAD){
+  const el=document.createElement("div");
+  const isCont=e.endday&&e.endday>e.day&&e.day!==curDay;
+  el.className="ev "+e.who+(isAD?" ev-ad":"");
+  let h="";
+  if(e.time&&!isAD&&!isCont)h+=`<span class="et">${fmt(e.time)}${e.endtime?" \u2013 "+fmt(e.endtime):""}</span>`;
+  h+=`<span class="en"></span>`;
+  if(e.loc)h+=`<span class="eloc"></span>`;
+  if(e.endday&&e.endday>e.day){const el2=isCont?`\u21a9 hasta ${e.endday.slice(8)}/${e.endday.slice(5,7)}`:`\u2192 ${e.endday.slice(8)}/${e.endday.slice(5,7)}`;h+=`<span class="edur">${el2}</span>`}
+  el.innerHTML=h;
+  el.querySelector(".en").textContent=e.title;
+  if(e.loc)el.querySelector(".eloc").textContent="\uD83D\uDCCD "+e.loc;
+  if(e.who!=="mundial")el.onclick=()=>openM(e.fid,e.day);
   return el;
 }
 
-const overlay = document.getElementById("overlay");
-
-function openModal(firestoreId, dayIso) {
-  editingId = firestoreId; addContext = dayIso;
-  if (firestoreId) {
-    const e = events.find(x => x.firestoreId === firestoreId);
-    document.getElementById("modal-title").textContent = "Editar evento";
-    document.getElementById("m-name").value = e.title;
-    document.getElementById("m-loc").value = e.loc || "";
-    document.getElementById("m-day").value = e.day;
-    document.getElementById("m-time").value = e.time || "";
-    document.getElementById("m-endday").value = e.endday || "";
-    document.getElementById("m-endtime").value = e.endtime || "";
-    document.getElementById("m-who").value = e.who;
-    document.getElementById("m-del").style.display = "";
-  } else {
-    document.getElementById("modal-title").textContent = "Nuevo evento";
-    document.getElementById("m-name").value = "";
-    document.getElementById("m-loc").value = "";
-    document.getElementById("m-day").value = dayIso || "";
-    document.getElementById("m-time").value = "";
-    document.getElementById("m-endday").value = "";
-    document.getElementById("m-endtime").value = "";
-    document.getElementById("m-who").value = "vic";
-    document.getElementById("m-del").style.display = "none";
+const ov=document.getElementById("overlay");
+function openM(fid,dayIso){
+  editId=fid;addCtx=dayIso;
+  if(fid){
+    const e=events.find(x=>x.fid===fid);
+    document.getElementById("mtitle").textContent="Editar evento";
+    document.getElementById("mn").value=e.title;
+    document.getElementById("ml").value=e.loc||"";
+    document.getElementById("md").value=e.day;
+    document.getElementById("mt").value=e.time||"";
+    document.getElementById("med").value=e.endday||"";
+    document.getElementById("met").value=e.endtime||"";
+    document.getElementById("mw").value=e.who;
+    document.getElementById("mdel").style.display="";
+  }else{
+    document.getElementById("mtitle").textContent="Nuevo evento";
+    document.getElementById("mn").value="";
+    document.getElementById("ml").value="";
+    document.getElementById("md").value=dayIso||"";
+    document.getElementById("mt").value="";
+    document.getElementById("med").value="";
+    document.getElementById("met").value="";
+    document.getElementById("mw").value="vic";
+    document.getElementById("mdel").style.display="none";
   }
-  overlay.classList.add("open");
-  setTimeout(() => document.getElementById("m-name").focus(), 80);
+  ov.classList.add("open");
+  setTimeout(()=>document.getElementById("mn").focus(),80);
 }
-function closeModal(){ overlay.classList.remove("open"); editingId = null; }
+function closeM(){ov.classList.remove("open");editId=null}
 
-document.getElementById("m-save").onclick = async () => {
-  const title = document.getElementById("m-name").value.trim();
-  if (!title) { document.getElementById("m-name").focus(); return; }
-  const data = {
+document.getElementById("msave").onclick=async()=>{
+  const title=document.getElementById("mn").value.trim();
+  if(!title){document.getElementById("mn").focus();return}
+  const data={
     title,
-    loc: document.getElementById("m-loc").value.trim(),
-    day: document.getElementById("m-day").value || addContext,
-    time: document.getElementById("m-time").value,
-    endday: document.getElementById("m-endday").value,
-    endtime: document.getElementById("m-endtime").value,
-    who: document.getElementById("m-who").value,
+    loc:document.getElementById("ml").value.trim(),
+    day:document.getElementById("md").value||addCtx,
+    time:document.getElementById("mt").value,
+    endday:document.getElementById("med").value,
+    endtime:document.getElementById("met").value,
+    who:document.getElementById("mw").value,
   };
-  closeModal();
-  if (editingId) await setDoc(doc(db, "eventos", editingId), data);
-  else await addDoc(col, data);
+  closeM();
+  if(editId)await setDoc(doc(db,"eventos",editId),data);
+  else await addDoc(col,data);
 };
-
-document.getElementById("m-del").onclick = async () => {
-  if (editingId && confirm("¿Eliminar este evento?")) {
-    const id = editingId; closeModal();
-    await deleteDoc(doc(db, "eventos", id));
-  }
+document.getElementById("mdel").onclick=async()=>{
+  if(editId&&confirm("Eliminar este evento?")){const id=editId;closeM();await deleteDoc(doc(db,"eventos",id))}
 };
-
-document.getElementById("m-cancel").onclick = closeModal;
-overlay.onclick = e => { if (e.target === overlay) closeModal(); };
-document.getElementById("filter").onchange = render;
-
-document.getElementById("btn-expand").onclick = () => {
-  expandAll = !expandAll;
-  if (expandAll) { days.forEach(d => openDays.add(iso(d))); document.getElementById("btn-expand").textContent = "Cerrar todo"; }
-  else { openDays.clear(); document.getElementById("btn-expand").textContent = "Expandir todo"; }
+document.getElementById("mcancel").onclick=closeM;
+ov.onclick=ev=>{if(ev.target===ov)closeM()};
+document.getElementById("filter").onchange=render;
+document.getElementById("btnexp").onclick=()=>{
+  expAll=!expAll;
+  if(expAll)days.forEach(d=>openSet.add(iso(d)));else openSet.clear();
+  document.getElementById("btnexp").textContent=expAll?"Cerrar todo":"Expandir todo";
   render();
 };
-
-document.getElementById("reset").onclick = async () => {
-  if (confirm("¿Restaurar eventos iniciales? Se perderán los cambios.")) {
-    const batch = writeBatch(db);
-    events.forEach(e => { if (e.firestoreId) batch.delete(doc(db, "eventos", e.firestoreId)); });
-    seed.forEach(e => batch.set(doc(col, e.id), e));
-    await batch.commit();
+document.getElementById("btnreset").onclick=async()=>{
+  if(confirm("Restaurar eventos iniciales? Se perder\u00e1n los cambios.")){
+    const b=writeBatch(db);
+    events.forEach(e=>{if(e.fid)b.delete(doc(db,"eventos",e.fid))});
+    seed.forEach(e=>b.set(doc(col,e.id),e));
+    await b.commit();
   }
 };
 </script>

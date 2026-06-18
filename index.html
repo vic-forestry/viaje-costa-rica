@@ -65,10 +65,7 @@ h1{font-size:19px;font-weight:600;letter-spacing:-.3px;margin-bottom:2px}
 .dname{font-weight:600;font-size:14px;text-transform:capitalize;min-width:82px}
 .day-today .dname{color:var(--vic-tx)}
 .ddate{color:var(--hint);font-size:12px;min-width:40px}
-.dpills{display:flex;gap:4px;flex-wrap:wrap;flex:1;justify-content:flex-end;overflow:hidden}
-.pill{font-size:10px;padding:2px 7px;border-radius:12px;white-space:nowrap;font-weight:500;max-width:130px;overflow:hidden;text-overflow:ellipsis}
-.pill.vic{background:var(--vic-bg);color:var(--vic-tx)}.pill.cel{background:var(--cel-bg);color:var(--cel-tx)}
-.pill.zoe{background:var(--zoe-bg);color:var(--zoe-tx)}.pill.mundial{background:var(--mun-bg);color:var(--mun-tx)}
+.dpills{display:none}
 .dadd{flex-shrink:0;width:32px;height:32px;border-radius:50%;border:1px solid var(--bstrong);background:none;color:var(--mute);cursor:pointer;font-size:18px;display:flex;align-items:center;justify-content:center;touch-action:manipulation}
 .dadd:active{background:var(--border)}
 
@@ -98,7 +95,7 @@ h1{font-size:19px;font-weight:600;letter-spacing:-.3px;margin-bottom:2px}
 .ev.vic{background:var(--vic-bg);color:var(--vic-tx);border-color:var(--vic)}
 .ev.cel{background:var(--cel-bg);color:var(--cel-tx);border-color:var(--cel)}
 .ev.zoe{background:var(--zoe-bg);color:var(--zoe-tx);border-color:var(--zoe)}
-.ev.mundial{background:var(--mun-bg);color:var(--mun-tx);border-color:var(--mun);cursor:default}
+.ev.mundial{background:var(--mun-bg);color:var(--mun-tx);border-color:var(--mun)}
 .freemsg{padding:10px 14px;font-size:12px;color:var(--hint);font-style:italic}
 .loading{text-align:center;padding:40px 20px;color:var(--mute);font-size:14px}
 
@@ -142,7 +139,6 @@ h1{font-size:19px;font-weight:600;letter-spacing:-.3px;margin-bottom:2px}
     </div>
   </header>
   <div class="bar">
-    <div class="sbadge" id="sbadge"><span class="sdot"></span><span id="stxt">Conectando...</span></div>
     <button class="btop" id="btnfilter">&#9776; Filtrar</button>
     <button class="btop" id="btnexp">Expandir todo</button>
     <button class="btop breset" id="btnreset">Restaurar</button>
@@ -170,18 +166,11 @@ h1{font-size:19px;font-weight:600;letter-spacing:-.3px;margin-bottom:2px}
     <div class="field"><label>NOMBRE</label><input type="text" id="mn" placeholder="&#191;Qu&eacute; es?" autocomplete="off"></div>
     <div class="field"><label>LUGAR</label><input type="text" id="ml" placeholder="Opcional" autocomplete="off"></div>
     <div class="frow">
-      <div class="field"><label>FECHA</label><input type="date" id="md" min="2026-06-24" max="2026-07-16"></div>
-      <div class="field"><label>FECHA FIN</label><input type="date" id="med" min="2026-06-24" max="2026-07-16"><div class="fhint">Solo si dura varios d&iacute;as</div></div>
-    </div>
-    <div class="frow">
       <div class="field"><label>HORA INICIO</label><input type="time" id="mt"></div>
       <div class="field">
-        <label>DURACI&Oacute;N</label>
-        <div class="dur-row">
-          <input type="number" id="mdur" min="0" max="1440" step="15" placeholder="min" style="font-size:16px;padding:13px 12px;border:1px solid var(--bstrong);border-radius:var(--rs);background:var(--bg);color:var(--text);width:100%;font-family:inherit">
-          <span style="font-size:13px;color:var(--mute);padding-bottom:14px;white-space:nowrap">minutos</span>
-        </div>
-        <div class="fhint">Ej: 90 = 1h30 &middot; 0 = todo el d&iacute;a</div>
+        <label>DURACI&Oacute;N (horas)</label>
+        <input type="number" id="mdur" min="0" max="24" step="0.5" placeholder="ej: 2" style="font-size:16px;padding:13px 12px;border:1px solid var(--bstrong);border-radius:var(--rs);background:var(--bg);color:var(--text);width:100%;font-family:inherit">
+        <div class="fhint">Ej: 1.5 = 1h30 &middot; dejar vac&iacute;o = todo el d&iacute;a</div>
       </div>
     </div>
     <div class="field"><label>DE QUI&Eacute;N</label>
@@ -218,32 +207,32 @@ const visible=new Set(["vic","cel","zoe","mundial"]);
 // Seed data — endtime computed from time+duration where applicable
 // Mundial: 2h = 120min. Personal events: reasonable durations.
 const seed=[
-  {id:"v1",day:"2026-06-25",time:"18:30",endday:"",dur:210,title:"Celebraci\u00f3n Andre y Juancho",loc:"Casa de Luli",who:"vic"},
-  {id:"v2",day:"2026-06-26",time:"09:00",endday:"",dur:60,title:"Recibir a Esther",loc:"La casa",who:"vic"},
-  {id:"v3",day:"2026-06-26",time:"12:30",endday:"",dur:120,title:"Almuerzo",loc:"Casa Andrea",who:"vic"},
+  {id:"v1",day:"2026-06-25",time:"18:30",endday:"",dur:3.5,title:"Celebraci\u00f3n Andre y Juancho",loc:"Casa de Luli",who:"vic"},
+  {id:"v2",day:"2026-06-26",time:"09:00",endday:"",dur:1,title:"Recibir a Esther",loc:"La casa",who:"vic"},
+  {id:"v3",day:"2026-06-26",time:"12:30",endday:"",dur:2,title:"Almuerzo",loc:"Casa Andrea",who:"vic"},
   {id:"v4",day:"2026-06-28",time:"",endday:"",dur:0,title:"Cumple de Juancho",loc:"",who:"vic"},
-  {id:"v5",day:"2026-06-29",time:"07:00",endday:"",dur:180,title:"Pilates + desayuno",loc:"Casa Andrea",who:"vic"},
-  {id:"v6",day:"2026-06-29",time:"16:45",endday:"",dur:75,title:"Cita con Neurol\u00f3go",loc:"",who:"vic"},
+  {id:"v5",day:"2026-06-29",time:"07:00",endday:"",dur:3,title:"Pilates + desayuno",loc:"Casa Andrea",who:"vic"},
+  {id:"v6",day:"2026-06-29",time:"16:45",endday:"",dur:1.25,title:"Cita con Neurol\u00f3go",loc:"",who:"vic"},
   {id:"c1",day:"2026-06-25",time:"",endday:"",dur:0,title:"Mita",loc:"Casa de Mita",who:"cel"},
   {id:"c2",day:"2026-06-26",time:"",endday:"",dur:0,title:"Pito",loc:"Casa de Pito",who:"cel"},
-  {id:"m1",day:"2026-06-25",time:"14:00",endday:"",dur:120,title:"Curazao vs Costa de Marfil",loc:"",who:"mundial"},
-  {id:"m2",day:"2026-06-25",time:"14:00",endday:"",dur:120,title:"Ecuador vs Alemania",loc:"",who:"mundial"},
-  {id:"m3",day:"2026-06-25",time:"17:00",endday:"",dur:120,title:"Jap\u00f3n vs Suecia",loc:"",who:"mundial"},
-  {id:"m4",day:"2026-06-25",time:"17:00",endday:"",dur:120,title:"T\u00fanez vs Pa\u00edses Bajos",loc:"",who:"mundial"},
-  {id:"m5",day:"2026-06-25",time:"20:00",endday:"",dur:120,title:"Turqu\u00eda vs EE.UU.",loc:"",who:"mundial"},
-  {id:"m6",day:"2026-06-25",time:"20:00",endday:"",dur:120,title:"Paraguay vs Australia",loc:"",who:"mundial"},
-  {id:"m7",day:"2026-06-26",time:"13:00",endday:"",dur:120,title:"Noruega vs Francia",loc:"",who:"mundial"},
-  {id:"m8",day:"2026-06-26",time:"13:00",endday:"",dur:120,title:"Senegal vs Irak",loc:"",who:"mundial"},
-  {id:"m9",day:"2026-06-26",time:"18:00",endday:"",dur:120,title:"Cabo Verde vs Arabia Saudita",loc:"",who:"mundial"},
-  {id:"m10",day:"2026-06-26",time:"18:00",endday:"",dur:120,title:"Uruguay vs Espa\u00f1a",loc:"",who:"mundial"},
-  {id:"m11",day:"2026-06-26",time:"21:00",endday:"",dur:120,title:"Egipto vs Ir\u00e1n",loc:"",who:"mundial"},
-  {id:"m12",day:"2026-06-26",time:"21:00",endday:"",dur:120,title:"Nueva Zelanda vs B\u00e9lgica",loc:"",who:"mundial"},
-  {id:"m13",day:"2026-06-27",time:"15:00",endday:"",dur:120,title:"Panam\u00e1 vs Inglaterra",loc:"",who:"mundial"},
-  {id:"m14",day:"2026-06-27",time:"15:00",endday:"",dur:120,title:"Croacia vs Ghana",loc:"",who:"mundial"},
-  {id:"m15",day:"2026-06-27",time:"17:30",endday:"",dur:120,title:"Colombia vs Portugal",loc:"",who:"mundial"},
-  {id:"m16",day:"2026-06-27",time:"17:30",endday:"",dur:120,title:"RD Congo vs Uzbekist\u00e1n",loc:"",who:"mundial"},
-  {id:"m17",day:"2026-06-27",time:"20:00",endday:"",dur:120,title:"Argelia vs Austria",loc:"",who:"mundial"},
-  {id:"m18",day:"2026-06-27",time:"20:00",endday:"",dur:120,title:"Jordania vs Argentina",loc:"",who:"mundial"},
+  {id:"m1",day:"2026-06-25",time:"14:00",endday:"",dur:2,title:"Curazao vs Costa de Marfil",loc:"",who:"mundial"},
+  {id:"m2",day:"2026-06-25",time:"14:00",endday:"",dur:2,title:"Ecuador vs Alemania",loc:"",who:"mundial"},
+  {id:"m3",day:"2026-06-25",time:"17:00",endday:"",dur:2,title:"Jap\u00f3n vs Suecia",loc:"",who:"mundial"},
+  {id:"m4",day:"2026-06-25",time:"17:00",endday:"",dur:2,title:"T\u00fanez vs Pa\u00edses Bajos",loc:"",who:"mundial"},
+  {id:"m5",day:"2026-06-25",time:"20:00",endday:"",dur:2,title:"Turqu\u00eda vs EE.UU.",loc:"",who:"mundial"},
+  {id:"m6",day:"2026-06-25",time:"20:00",endday:"",dur:2,title:"Paraguay vs Australia",loc:"",who:"mundial"},
+  {id:"m7",day:"2026-06-26",time:"13:00",endday:"",dur:2,title:"Noruega vs Francia",loc:"",who:"mundial"},
+  {id:"m8",day:"2026-06-26",time:"13:00",endday:"",dur:2,title:"Senegal vs Irak",loc:"",who:"mundial"},
+  {id:"m9",day:"2026-06-26",time:"18:00",endday:"",dur:2,title:"Cabo Verde vs Arabia Saudita",loc:"",who:"mundial"},
+  {id:"m10",day:"2026-06-26",time:"18:00",endday:"",dur:2,title:"Uruguay vs Espa\u00f1a",loc:"",who:"mundial"},
+  {id:"m11",day:"2026-06-26",time:"21:00",endday:"",dur:2,title:"Egipto vs Ir\u00e1n",loc:"",who:"mundial"},
+  {id:"m12",day:"2026-06-26",time:"21:00",endday:"",dur:2,title:"Nueva Zelanda vs B\u00e9lgica",loc:"",who:"mundial"},
+  {id:"m13",day:"2026-06-27",time:"15:00",endday:"",dur:2,title:"Panam\u00e1 vs Inglaterra",loc:"",who:"mundial"},
+  {id:"m14",day:"2026-06-27",time:"15:00",endday:"",dur:2,title:"Croacia vs Ghana",loc:"",who:"mundial"},
+  {id:"m15",day:"2026-06-27",time:"17:30",endday:"",dur:2,title:"Colombia vs Portugal",loc:"",who:"mundial"},
+  {id:"m16",day:"2026-06-27",time:"17:30",endday:"",dur:2,title:"RD Congo vs Uzbekist\u00e1n",loc:"",who:"mundial"},
+  {id:"m17",day:"2026-06-27",time:"20:00",endday:"",dur:2,title:"Argelia vs Austria",loc:"",who:"mundial"},
+  {id:"m18",day:"2026-06-27",time:"20:00",endday:"",dur:2,title:"Jordania vs Argentina",loc:"",who:"mundial"},
 ];
 
 let events=[],editId=null,addCtx=null,seeded=false,expAll=false;
@@ -256,7 +245,7 @@ const MN=["ene","feb","mar","abr","may","jun","jul","ago","sep","oct","nov","dic
 
 function iso(d){return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0")}
 function toMin(t){if(!t)return null;const[h,m]=t.split(":").map(Number);return h*60+m}
-function addMins(t,mins){if(!t)return"";const base=toMin(t);const total=(base+mins)%1440;const h=Math.floor(total/60),m=total%60;return String(h).padStart(2,"0")+":"+String(m).padStart(2,"0")}
+function addMins(t,hrs){if(!t||!hrs)return"";const base=toMin(t);const total=(base+Math.round(hrs*60))%1440;const h=Math.floor(total/60),m=total%60;return String(h).padStart(2,"0")+":"+String(m).padStart(2,"0")}
 function fmt(t){if(!t)return"";const[h,m]=t.split(":").map(Number);const ap=h>=12?"pm":"am";const h12=h%12||12;return m?`${h12}:${String(m).padStart(2,"0")}${ap}`:`${h12}${ap}`}
 function eDays(e){
   const end=e.endday&&e.endday>=e.day?e.endday:e.day;
@@ -266,7 +255,7 @@ function eDays(e){
   return r;
 }
 
-function setSync(st,tx){const b=document.getElementById("sbadge");b.className="sbadge "+st;document.getElementById("stxt").textContent=tx}
+function setSync(){}
 
 onSnapshot(col,snap=>{
   events=snap.docs.map(d=>({fid:d.id,...d.data()}));
@@ -400,10 +389,9 @@ function render(){
       const ec=document.createElement("div");ec.className="evcol";ec.style.height=tlH+"px";
       timed.filter(e=>e.who===w&&!(e.endday&&e.endday>e.day&&e.day!==dIso)).forEach(e=>{
         const sMin=toMin(e.time);if(sMin===null)return;
-        const dur=(e.dur&&e.dur>0)?e.dur:60; // default 1h if no duration
-        const eMin=sMin+dur;
+        const durMins=e.dur>0?Math.round(e.dur*60):60; // dur stored in hours
         const topPx=(sMin/60)*SLOT;
-        const hPx=Math.max((dur/60)*SLOT-2,20);
+        const hPx=Math.max((durMins/60)*SLOT-2,20);
         const el=mkEv(e,dIso,false);
         el.style.top=topPx+"px";el.style.height=hPx+"px";
         ec.appendChild(el);
@@ -432,7 +420,7 @@ function mkEv(e,curDay,isAD){
   el.innerHTML=h;
   el.querySelector(".en").textContent=e.title;
   if(e.loc)el.querySelector(".eloc").textContent="\uD83D\uDCCD "+e.loc;
-  if(e.who!=="mundial")el.onclick=()=>openM(e.fid,e.day);
+  el.onclick=()=>openM(e.fid,e.day);
   return el;
 }
 
@@ -446,8 +434,6 @@ function openM(fid,dayIso){
     document.getElementById("mtitle").textContent="Editar evento";
     document.getElementById("mn").value=e.title;
     document.getElementById("ml").value=e.loc||"";
-    document.getElementById("md").value=e.day;
-    document.getElementById("med").value=e.endday||"";
     document.getElementById("mt").value=e.time||"";
     document.getElementById("mdur").value=e.dur||"";
     document.getElementById("mw").value=e.who;
@@ -456,38 +442,30 @@ function openM(fid,dayIso){
     document.getElementById("mtitle").textContent="Nuevo evento";
     document.getElementById("mn").value="";
     document.getElementById("ml").value="";
-    document.getElementById("md").value=dayIso||"";
-    document.getElementById("med").value="";
     document.getElementById("mt").value="";
     document.getElementById("mdur").value="";
     document.getElementById("mw").value="vic";
     document.getElementById("mdel").style.display="none";
   }
   ov.classList.add("open");
-  // slight delay so keyboard doesn't immediately pop and shift layout
   setTimeout(()=>document.getElementById("mn").focus(),120);
 }
 function closeM(){ov.classList.remove("open");editId=null}
 
-// auto-set endday = startday if endday is empty on date change
-document.getElementById("md").onchange=()=>{
-  if(!document.getElementById("med").value){
-    document.getElementById("med").value=document.getElementById("md").value;
-  }
-};
+// mundial events can be edited too (clicking opens modal)
 
 document.getElementById("msave").onclick=async()=>{
   const title=document.getElementById("mn").value.trim();
   if(!title){document.getElementById("mn").focus();return}
-  const startDay=document.getElementById("md").value||addCtx;
-  const endDay=document.getElementById("med").value||startDay; // default endday = startday
+  // when editing, preserve original day; when adding, use the day from context
+  const existingDay=editId?events.find(x=>x.fid===editId)?.day:null;
   const data={
     title,
     loc:document.getElementById("ml").value.trim(),
-    day:startDay,
-    endday:endDay===startDay?"":endDay, // only store endday if different
+    day:existingDay||addCtx,
+    endday:"",
     time:document.getElementById("mt").value,
-    dur:parseInt(document.getElementById("mdur").value)||0,
+    dur:parseFloat(document.getElementById("mdur").value)||0,
     who:document.getElementById("mw").value,
   };
   closeM();

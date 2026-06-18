@@ -80,13 +80,11 @@ h1{font-size:19px;font-weight:600;letter-spacing:-.3px;margin-bottom:2px}
 .ch-v{color:var(--vic)!important}.ch-c{color:var(--cel)!important}.ch-z{color:var(--zoe)!important}.ch-m{color:var(--mun)!important}
 
 /* TIMELINE */
-.tlwrap{position:relative;overflow:hidden}
+.tlwrap{position:relative}
 .tlgrid{display:grid}
 .hrlbl{font-size:10px;color:var(--hint);padding:2px 5px 0 0;text-align:right;border-top:1px solid var(--line);border-right:1px solid var(--line);height:var(--slot);display:flex;align-items:flex-start;justify-content:flex-end}
 .hrbg{border-top:1px solid var(--line);border-right:1px solid var(--line);height:var(--slot)}.hrbg:last-child{border-right:none}
-.evoverlay{position:absolute;top:0;left:0;right:0;pointer-events:none}
-.evoverlay-inner{position:relative;display:grid}
-.evcol{position:relative;pointer-events:auto;border-right:1px solid var(--line)}.evcol:last-child{border-right:none}
+.evcol{position:relative;border-right:1px solid var(--line)}.evcol:last-child{border-right:none}
 
 /* EVENTS */
 .ev{border-radius:5px;padding:3px 5px;font-size:11.5px;cursor:pointer;border-left:3px solid;display:block;overflow:hidden;line-height:1.3;position:absolute;left:2px;right:2px;z-index:1}
@@ -368,9 +366,9 @@ function render(){
       body.appendChild(row);
     }
 
-    /* TIMELINE GRID + EVENTS */
     const tlH=24*SLOT;
-    const tlwrap=document.createElement("div");tlwrap.className="tlwrap";tlwrap.style.height=tlH+"px";
+    const tlwrap=document.createElement("div");tlwrap.className="tlwrap";
+    tlwrap.style.cssText=`height:${tlH}px;position:relative;`;
 
     // background grid
     const tlg=document.createElement("div");tlg.className="tlgrid";tlg.style.gridTemplateColumns=cols_w;
@@ -380,26 +378,28 @@ function render(){
     });
     tlwrap.appendChild(tlg);
 
-    // event overlay — absolutely positioned over the grid
-    const evo=document.createElement("div");evo.className="evoverlay";evo.style.height=tlH+"px";
-    const evi=document.createElement("div");evi.className="evoverlay-inner";
-    evi.style.cssText=`position:absolute;top:0;left:${LABEL_W}px;right:0;height:${tlH}px;display:grid;grid-template-columns:${visArr.map(()=>"1fr").join(" ")}`;
+    // Inject events directly into each column's last background cell group
+    // We do this by rebuilding the grid with position:relative columns
+    // that hold both the hourly bg rows AND the absolutely-placed events.
+    // Approach: one wrapper per visible person column, full height, position:relative.
+    const colsWrap=document.createElement("div");
+    colsWrap.style.cssText=`position:absolute;top:0;left:${LABEL_W}px;right:0;height:${tlH}px;display:grid;grid-template-columns:${visArr.map(()=>"1fr").join(" ")};pointer-events:none;`;
 
     visArr.forEach(w=>{
-      const ec=document.createElement("div");ec.className="evcol";ec.style.height=tlH+"px";
+      const col=document.createElement("div");
+      col.style.cssText=`position:relative;height:${tlH}px;border-right:1px solid var(--line);pointer-events:none;`;
       timed.filter(e=>e.who===w&&!(e.endday&&e.endday>e.day&&e.day!==dIso)).forEach(e=>{
         const sMin=toMin(e.time);if(sMin===null)return;
-        const durMins=e.dur>0?Math.round(e.dur*60):60; // dur stored in hours
+        const durMins=e.dur>0?Math.round(e.dur*60):60;
         const topPx=(sMin/60)*SLOT;
         const hPx=Math.max((durMins/60)*SLOT-2,20);
         const el=mkEv(e,dIso,false);
-        el.style.top=topPx+"px";el.style.height=hPx+"px";
-        ec.appendChild(el);
+        el.style.cssText+=`;top:${topPx}px;height:${hPx}px;pointer-events:auto;`;
+        col.appendChild(el);
       });
-      evi.appendChild(ec);
+      colsWrap.appendChild(col);
     });
-    evo.appendChild(evi);
-    tlwrap.appendChild(evo);
+    tlwrap.appendChild(colsWrap);
     body.appendChild(tlwrap);
 
     if(!de.length){const f=document.createElement("div");f.className="freemsg";f.textContent="D\u00eda libre";body.appendChild(f)}

@@ -420,7 +420,7 @@ function mkEv(e,curDay,isAD){
   el.innerHTML=h;
   el.querySelector(".en").textContent=e.title;
   if(e.loc)el.querySelector(".eloc").textContent="\uD83D\uDCCD "+e.loc;
-  el.onclick=()=>openM(e.fid,e.day);
+  el.onclick=(ev)=>{ev.stopPropagation();openM(e.fid,e.day);};
   return el;
 }
 
@@ -429,6 +429,9 @@ const ov=document.getElementById("overlay");
 
 function openM(fid,dayIso){
   editId=fid;addCtx=dayIso;
+  const modalbox=document.getElementById("modalbox");
+  modalbox.dataset.editId=fid||"";
+  modalbox.dataset.addCtx=dayIso||"";
   if(fid){
     const e=events.find(x=>x.fid===fid);
     document.getElementById("mtitle").textContent="Editar evento";
@@ -450,32 +453,37 @@ function openM(fid,dayIso){
   ov.classList.add("open");
   setTimeout(()=>document.getElementById("mn").focus(),120);
 }
-function closeM(){ov.classList.remove("open");editId=null}
+function closeM(){ov.classList.remove("open");editId=null;}
 
 // mundial events can be edited too (clicking opens modal)
 
 document.getElementById("msave").onclick=async()=>{
   const title=document.getElementById("mn").value.trim();
   if(!title){document.getElementById("mn").focus();return}
-  // when editing, preserve original day; when adding, use the day from context
-  const existingDay=editId?events.find(x=>x.fid===editId)?.day:null;
+  const modalbox=document.getElementById("modalbox");
+  const idToSave=modalbox.dataset.editId||null;
+  const dayToUse=modalbox.dataset.addCtx||"";
+  const existingDay=idToSave?events.find(x=>x.fid===idToSave)?.day:null;
   const data={
     title,
     loc:document.getElementById("ml").value.trim(),
-    day:existingDay||addCtx,
+    day:existingDay||dayToUse,
     endday:"",
     time:document.getElementById("mt").value,
     dur:parseFloat(document.getElementById("mdur").value)||0,
     who:document.getElementById("mw").value,
   };
-  const idToSave=editId; // capture before closeM nullifies it
   closeM();
-  if(idToSave)await setDoc(doc(db,"eventos",idToSave),data);
-  else await addDoc(col,data);
+  if(idToSave){
+    await setDoc(doc(db,"eventos",idToSave),data);
+  }else{
+    await addDoc(col,data);
+  }
 };
 
 document.getElementById("mdel").onclick=async()=>{
-  if(editId&&confirm("Eliminar este evento?")){const id=editId;closeM();await deleteDoc(doc(db,"eventos",id))}
+  const idToDel=document.getElementById("modalbox").dataset.editId||null;
+  if(idToDel&&confirm("Eliminar este evento?")){closeM();await deleteDoc(doc(db,"eventos",idToDel));}
 };
 document.getElementById("mcancel").onclick=closeM;
 ov.onclick=ev=>{if(ev.target===ov)closeM()};

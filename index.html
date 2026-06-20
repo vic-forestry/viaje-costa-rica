@@ -468,8 +468,9 @@ document.getElementById("msave").onclick=async()=>{
     dur:parseFloat(document.getElementById("mdur").value)||0,
     who:document.getElementById("mw").value,
   };
+  const idToSave=editId; // capture before closeM nullifies it
   closeM();
-  if(editId)await setDoc(doc(db,"eventos",editId),data);
+  if(idToSave)await setDoc(doc(db,"eventos",idToSave),data);
   else await addDoc(col,data);
 };
 
